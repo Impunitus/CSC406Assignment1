@@ -1,6 +1,7 @@
 package graphs.graphAlgs.matching;
 
 import net.datastructures.*;
+import graphs.graphAlgs.EdgeComparator;
 import graphs.graphAlgs.VertexDegreeComparator;
 
 import java.awt.geom.Point2D;
@@ -13,11 +14,37 @@ import java.awt.*;
 
 public class GreedyUnweightedMatchingStatic extends MatchingAlgorithm
 {
+    // decoration that indicates whether or not a Vertex has been added to the MST
+    public static final Object VERTEX_STATUS = new Object();
+    // decoration that indicates whether or not an Edge has been added to the MST
+    public static final Object EDGE_STATUS = new Object();
+    
+	// Values for STATUS decorations
+    public static final Object MATCHED = new Object();
+    public static final Object FREE = new Object();
 
     public void runAlgorithm( AdjacencyListGraph<Point2D.Double, Double>  g )
     {
       // Complete the code for the Greedy Algorithm for creating a Matching in a Graph
 
+        // This heap will contain all the edges in the graph
+        // We will examine the edges from the least-costly to the most-costly
+        PriorityQueue<Edge<Double>> heap = new PriorityQueue<Edge<Double>>(11, new EdgeComparator());
+
+        // decorate all vertices as NOT USED  
+        for ( Vertex v : g.vertices() ) {
+            v.put ( VERTEX_STATUS, FREE );          
+        }
+
+        /* unsure if needed in this
+        // initialize all the edges of the graph as being NOT USED
+        for ( Edge e : g.edges() )
+            e.put ( EDGE_STATUS, NOT_USED ); 
+        */
+        
+        // If graph is empty, return immediately 
+        if ( g.numVertices() == 0 )  
+        	return;
     }
 
     public void draw ( Graphics screen, AdjacencyListGraph<Point2D.Double,Double> testGraph, int minDimension )
