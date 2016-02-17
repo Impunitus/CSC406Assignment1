@@ -44,7 +44,7 @@ public class GreedyMST_Prim extends GraphAlgorithm
             v.put ( VERTEX_STATUS, NOT_IN_TREE );          
         }
 
-        // initialize all the edges of the graph as beining NOT IN THE Min Spanning Tree
+        // initialize all the edges of the graph as being NOT IN THE Min Spanning Tree
         for ( Edge e : g.edges() )
             e.put ( EDGE_STATUS, NOT_IN_TREE ); 
 
