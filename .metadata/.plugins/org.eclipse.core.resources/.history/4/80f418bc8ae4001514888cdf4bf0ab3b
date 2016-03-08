@@ -1,0 +1,108 @@
+package graphs.graphAlgs.matching;
+
+import net.datastructures.*;
+import graphs.graphAlgs.EdgeComparator;
+import graphs.graphAlgs.VertexDegreeComparator;
+
+import java.awt.geom.Point2D;
+import java.util.PriorityQueue;
+import java.util.Iterator;
+
+import javax.swing.*;
+
+import java.awt.*;
+
+public class GreedyUnweightedMatchingStatic extends MatchingAlgorithm
+{
+    public void runAlgorithm( AdjacencyListGraph<Point2D.Double, Double>  g )
+    {
+        // This heap will contain all the edges in the graph
+        // We will examine the edges from the least-costly to the most-costly
+        PriorityQueue<Vertex> heap = new PriorityQueue<Vertex>(250, new VertexDegreeComparator());
+
+        // decorate all vertices as FREE
+        for (Vertex v : g.vertices())
+        {
+          v.put (DEGREE, g.degree(v));
+          v.put (VERTEX_STATUS, FREE);
+        }
+
+        //decorate all edges as FREE
+        for (Edge e : g.edges())
+        {
+          e.put (EDGE_STATUS, FREE);
+        }
+
+          //adds all vertices to the heap
+          for (Vertex v : g.vertices())
+          {
+        	  heap.add(v);
+          }
+
+          //While heap isn't empty keep polling
+          //Define best neighbor so far, degree wise
+
+          int bestSoFar = Integer.MAX_VALUE; //lowest Degree will be saved
+          int temp =0;
+
+          Edge currInc = null;
+          Edge bestEdge = null;
+
+          Vertex bestIncVertex = null;
+          Vertex currIncVertex = null;
+          Vertex currVertex = null;
+
+          while (!heap.isEmpty())
+          {
+            currVertex = heap.poll();
+            temp = 0;
+            bestSoFar = Integer.MAX_VALUE;
+
+            for (Edge b : g.incidentEdges(currVertex)) //goes through all end vertices to try and get their degree
+            {
+              currIncVertex = g.opposite(currVertex, b); //gets the vertex using the current incident edge and saves it
+              currInc = b;
+              temp = (int)currIncVertex.get(DEGREE);
+
+              if (temp < bestSoFar && (currIncVertex.get(VERTEX_STATUS) == FREE))
+              {
+                bestIncVertex = currIncVertex;
+                bestSoFar = temp; //saves best vertie and lowest degree so far
+                bestEdge = currInc;
+              }
+            }
+            if (currVertex.get(VERTEX_STATUS) == FREE && g.degree(currVertex) != 0)
+            {
+              bestIncVertex.put(VERTEX_STATUS, MATCHED);
+              currVertex.put(VERTEX_STATUS, MATCHED);
+              bestEdge.put(EDGE_STATUS, MATCHED);
+            }
+          }
+    }
+
+
+
+    public void draw ( Graphics screen, AdjacencyListGraph<Point2D.Double,Double> testGraph, int minDimension )
+    {
+        drawNodes ( screen, testGraph, minDimension );
+        drawEdges ( screen, testGraph, minDimension );
+    }
+
+    public void drawNodes ( Graphics screen, AdjacencyListGraph<Point2D.Double,Double> graph, int minDimension )
+    {
+        super.drawNodes(  screen, graph, minDimension );
+
+        // label each vertex in the graph with its degree on the output screen
+        for ( Vertex u : graph.vertices() )
+        {
+            Point2D p = (Point2D) u.element();
+
+            double xPos = p.getX()  *  minDimension;
+            double yPos = p.getY()  *  minDimension;
+
+                      //   screen.drawString( (u.get(DEGREE)) + "",
+                      //           (int)(xPos + 1.5*DOTRADIUS ),
+                          //       (int)(yPos + 1.5*DOTRADIUS ) );
+        }
+    }
+}
